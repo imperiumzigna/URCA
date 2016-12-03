@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import owncloud
 import os
-import time
+
 
 # General paths where to save data on cloud
 urca_path = 'URCA_data'
@@ -72,8 +72,8 @@ if __name__ == "__main__":
             time_now = str(datetime.datetime.now())
             cv2.imwrite('../URCA_data/DEPTH/' + today + '/' + time_now + '.jpg', depth)
             cv2.imwrite('../URCA_data/RGB/' + today + '/' + time_now + '.jpg', frame)
-            oc.put_directory('URCA', 'URCA_data')
-            time.sleep(120)
+            oc.put_directory('URCA', '../URCA_data/')
+            
         # Test current date for file management issues
         if not today == str(datetime.date.today()):
             today = str(datetime.date.today())
