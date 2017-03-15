@@ -3,11 +3,13 @@
 # -*- coding: utf-8 -*-
 from gpiozero import MotionSensor
 import datetime
+import time
 import freenect
 import cv2
 import numpy as np
 import owncloud
 import os
+
 
 
 # General paths where to save data on cloud
@@ -17,8 +19,8 @@ rgb_path = 'URCA/RGB/'
 # Start the PIR sensor on GPIO - 4
 sensor = MotionSensor(4)
 # Get the current date of today
-today = str(datetime.date.today())
-i = 0
+today = str(time.strftime("%I %M %S"))
+
 
 # ...
 try:
@@ -38,7 +40,6 @@ oc.mkdir('URCA/DEPTH')
 oc.mkdir('URCA/RGB')
 oc.mkdir(depth_path + today)
 oc.mkdir(rgb_path + today)
-
     
 # function to get RGB image from kinect
 def get_video():
@@ -57,7 +58,7 @@ def get_depth():
 
 if __name__ == "__main__":
     while 1:
-
+        
         # get a frame from RGB camera
         frame = get_video()
         # get a frame from depth sensor
@@ -66,19 +67,20 @@ if __name__ == "__main__":
         cv2.imshow('RGB image', frame)
         # display depth image
         cv2.imshow('Depth image', depth)
-
+        
         # If a person is detected print image on file and send to cloud
         if sensor.motion_detected:
-            time_now = str(datetime.datetime.now())
-            cv2.imwrite('../URCA_data/DEPTH/' + today + '/' + time_now + '.jpg', depth)
-            cv2.imwrite('../URCA_data/RGB/' + today + '/' + time_now + '.jpg', frame)
-            oc.put_directory('URCA', '../URCA_data/')
+           time_now = str(time.strftime("%I %M %S"))
+           cv2.imwrite('../URCA_data/DEPTH/' + today + '/' + time_now + '.jpg', depth)
+           cv2.imwrite('../URCA_data/RGB/' + today + '/' + time_now + '.jpg', frame)
+           oc.put_directory('URCA', '../URCA_data/')
+           
             
         # Test current date for file management issues
-        if not today == str(datetime.date.today()):
-            today = str(datetime.date.today())
-            oc.mkdir(depth_path + today)
-            oc.mkdir(rgb_path + today)
+        if not today == str(time.strftime("%I %M %S")):
+           today = str(time.strftime("%I %M %S"))
+           oc.mkdir(depth_path + today)
+           oc.mkdir(rgb_path + today)
             
         # quit program when 'esc' key is pressed
         k = cv2.waitKey(5) & 0xFF
