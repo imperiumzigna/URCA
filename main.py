@@ -20,9 +20,9 @@ rgb_path = 'URCA/RGB/'
 sensor = MotionSensor(4)
 # Get the current date of today
 today = str(time.strftime("%I %M %S"))
+has_image = False
 
-
-# ...
+# ...clc
 try:
     os.mkdir('../URCA_data')
     os.mkdir('../URCA_data/DEPTH')
@@ -33,13 +33,13 @@ except:
     os.mkdir('../URCA_data')
 
 # Conection with owncloud server
-oc = owncloud.Client('http://nuvem.cct.uema.br')
-oc.login('urca', 'KvZC-T5pe-8HmP')
-oc.mkdir('URCA')
-oc.mkdir('URCA/DEPTH')
-oc.mkdir('URCA/RGB')
-oc.mkdir(depth_path + today)
-oc.mkdir(rgb_path + today)
+#oc = owncloud.Client('http://nuvem.cct.uema.br')
+#oc.login('urca', 'KvZC-T5pe-8HmP')
+#oc.mkdir('URCA')
+#oc.mkdir('URCA/DEPTH')
+#oc.mkdir('URCA/RGB')
+#oc.mkdir(depth_path + today)
+#oc.mkdir(rgb_path + today)
     
 # function to get RGB image from kinect
 def get_video():
@@ -70,17 +70,19 @@ if __name__ == "__main__":
         
         # If a person is detected print image on file and send to cloud
         if sensor.motion_detected:
-           time_now = str(time.strftime("%I %M %S"))
-           cv2.imwrite('../URCA_data/DEPTH/' + today + '/' + time_now + '.jpg', depth)
-           cv2.imwrite('../URCA_data/RGB/' + today + '/' + time_now + '.jpg', frame)
-           oc.put_directory('URCA', '../URCA_data/')
+            print 'sensor ativo'
+            time_now = str(time.strftime("%I %M %S"))
+            cv2.imwrite('../URCA_data/DEPTH/' + today + '/' + time_now + '.jpg', depth)
+            cv2.imwrite('../URCA_data/RGB/' + today + '/' + time_now + '.jpg', frame)
+            #oc.put_directory('URCA/', '../URCA_data/')
+            
            
             
         # Test current date for file management issues
-        if not today == str(time.strftime("%I %M %S")):
-           today = str(time.strftime("%I %M %S"))
-           oc.mkdir(depth_path + today)
-           oc.mkdir(rgb_path + today)
+        #if not today == str(time.strftime("%I %M %S")):
+        #    today = str(time.strftime("%I %M %S"))
+        #    oc.mkdir(depth_path + today)
+        #    oc.mkdir(rgb_path + today)
             
         # quit program when 'esc' key is pressed
         k = cv2.waitKey(5) & 0xFF
